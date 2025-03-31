@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Management Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: #f7f7f7;
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            width: 100%;
+            padding: 20px;
+            color: white;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            margin: 0;
+        }
+
+        .task-board {
+            display: flex;
+            gap: 20px;
+            padding: 30px;
+            max-width: 1200px;
+            width: 100%;
+            justify-content: space-between;
+        }
+
+        .task-column {
+            background-color: #fff;
+            border-radius: 8px;
+            width: 30%;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .task-column:hover {
+            transform: scale(1.03);
+        }
+
+        .task-column h2 {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .task-column .task-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .task-column .task-item {
+            background-color: #f1f1f1;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: transform 0.2s ease, background-color 0.3s ease;
+        }
+
+        .task-column .task-item:hover {
+            background-color: #e0e0e0;
+            transform: translateY(-5px);
+        }
+
+        .task-column .task-item.dragging {
+            opacity: 0.5;
+        }
+
+        .task-form {
+            width: 90%;
+            max-width: 500px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+
+        .task-form input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        .task-form button {
+            padding: 12px 20px;
+            background-color: #2575fc;
+            border: none;
+            color: white;
+            font-size: 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .task-form button:hover {
+            background-color: #6a11cb;
+        }
+
+        footer {
+            background-color: #2575fc;
+            color: white;
+            padding: 15px;
+            width: 100%;
+            text-align: center;
+            font-size: 1rem;
+            margin-top: 30px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <h1>Task Management Dashboard</h1>
+        <p>Organize your tasks efficiently with drag-and-drop functionality.</p>
+    </header>
+
+    <div class="task-board">
+        <div class="task-column" id="todo-column" ondrop="drop(event)" ondragover="allowDrop(event)">
+            <h2>To Do</h2>
+            <ul id="todo-list" class="task-list">
+                <!-- Tasks will be added dynamically here -->
+            </ul>
+        </div>
+
+        <div class="task-column" id="inprogress-column" ondrop="drop(event)" ondragover="allowDrop(event)">
+            <h2>In Progress</h2>
+            <ul id="inprogress-list" class="task-list">
+                <!-- Tasks will be added dynamically here -->
+            </ul>
+        </div>
+
+        <div class="task-column" id="done-column" ondrop="drop(event)" ondragover="allowDrop(event)">
+            <h2>Done</h2>
+            <ul id="done-list" class="task-list">
+                <!-- Tasks will be added dynamically here -->
+            </ul>
+        </div>
+    </div>
+
+    <div class="task-form">
+        <h2>Add a New Task</h2>
+        <input type="text" id="task-title" placeholder="Enter task name..." />
+        <button onclick="addTask()">Add Task</button>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Task Dashboard | Designed by MAHESH</p>
+    </footer>
+
+    <script>
+        function allowDrop(event) {
+            event.preventDefault();
+        }
+
+        function drag(event) {
+            event.dataTransfer.setData("text", event.target.id);
+        }
+
+        function drop(event) {
+            event.preventDefault();
+            var data = event.dataTransfer.getData("text");
+            var draggedElement = document.getElementById(data);
+            event.target.appendChild(draggedElement);
+        }
+
+        function addTask() {
+            const taskTitle = document.getElementById('task-title').value;
+            if (taskTitle === '') {
+                alert('Please enter a task title!');
+                return;
+            }
+
+            const taskList = document.getElementById('todo-list');
+            const taskItem = document.createElement('li');
+            taskItem.textContent = taskTitle;
+            taskItem.classList.add('task-item');
+            taskItem.setAttribute('draggable', true);
+            taskItem.id = "task-" + Date.now();
+            taskItem.setAttribute('ondragstart', 'drag(event)');
+            taskList.appendChild(taskItem);
+
+            document.getElementById('task-title').value = '';
+        }
+    </script>
+
+</body>
+</html>
